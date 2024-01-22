@@ -5,6 +5,8 @@ import plotly.express as px
 
 from streamlit_extras.app_logo import add_logo
 
+import plotly.graph_objects as go
+
 st.set_page_config(layout="wide", menu_items={"About":"#Nothing realy good"})
 st.title('Reclamações por período')
 
@@ -59,6 +61,50 @@ def load_data(file_name):
                             "MES": "Mês"
                         })
     st.plotly_chart(fig, use_container_width=True)
+
+
+    col4, col5 = st.columns(2)
+
+    df_status = df_filtered.groupby("STATUS", as_index=False)['ID'].count()
+
+    df_uf = df_filtered.groupby(["STATUS", "UF"], as_index=False)['ID'].count()
+
+    with col4:
+        fig2 = px.pie(df_status, values="ID" ,
+                      names="STATUS",   
+                      title="Status de solução de problemas",
+                      labels={
+                          "STATUS": "Status",
+                          "ID": "Quantidade de ocorrências"
+                      })
+        st.plotly_chart(fig2, use_container_width=True)
+    with col5:
+        fig4 = go.Figure(go.Indicator(
+                        mode = "gauge+number",
+                        value = 60,
+                        domain = {'x': [0, 1], 'y': [0, 1]},
+                        gauge = {'axis': {'range': [None, 100]},
+                                 'bar': {'color': "grey"},
+                                 'steps' : [
+                                        {'range': [0, 50], 'color': "red"},
+                                        {'range': [50, 70], 'color': "yellow"},
+                                        {'range': [70, 100], 'color': "green"}
+                                    ]
+                                },
+                        title = {'text': "Percentual de solução"}))
+        st.plotly_chart(fig4, use_container_width=True)
+
+    fig3 = px.bar(df_uf, y="ID" ,
+                    color="STATUS", 
+                    x="UF",  
+                    barmode="group",
+                    title="Status de solução de problemas",
+                    labels={
+                        "STATUS": "Status",
+                        "ID": "Quantidade de ocorrências"
+                    })
+    st.plotly_chart(fig3, use_container_width=True)
+
     st.dataframe(df_filtered)
 
 
