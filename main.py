@@ -69,6 +69,8 @@ def load_data(file_name):
 
     df_uf = df_filtered.groupby(["STATUS", "UF"], as_index=False)['ID'].count()
 
+    perc_resolvido = 100 * df_filtered[df_filtered['STATUS'] == 'Resolvido'].shape[0] / df_filtered.shape[0]
+
     with col4:
         fig2 = px.pie(df_status, values="ID" ,
                       names="STATUS",   
@@ -81,7 +83,7 @@ def load_data(file_name):
     with col5:
         fig4 = go.Figure(go.Indicator(
                         mode = "gauge+number",
-                        value = 60,
+                        value = perc_resolvido,
                         domain = {'x': [0, 1], 'y': [0, 1]},
                         gauge = {'axis': {'range': [None, 100]},
                                  'bar': {'color': "grey"},
