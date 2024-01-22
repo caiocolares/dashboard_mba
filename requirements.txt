@@ -4,3 +4,4 @@ plotly-express==0.4.1
 streamlit==1.30.0
 ydata-profiling==4.6.4
 streamlit-extras==0.3.6
+streamlit-pandas-profiling==0.1.3
