@@ -34,13 +34,27 @@ def load_data(file_name):
     with col2:
         estado  = st.selectbox('UF',index=None, placeholder="Selecione um estado", options=df['UF'].unique())
     with col3:
+        status = st.multiselect('Status', placeholder="Selecione um status", options=df['STATUS'].unique())
+        
+    col11, col22 = st.columns(2)
+    with col11:
+        tamanho_texto = st.slider("Tamanho do texto", min_value=1, max_value=10000, 
+                                  value=(1,10000), 
+                                  key=f's_{key}')
+
+    with col22:
         chart_kind = st.selectbox("Tipo e Gráfico",  options=["Barra", "Linha"], key=key)
+
 
     df_filtered = df
     if ano:
         df_filtered = df_filtered[df_filtered['ANO'] == ano]
     if estado:
         df_filtered = df_filtered[(df_filtered['UF']== estado)]
+    if status:
+        df_filtered = df_filtered[(df_filtered['STATUS'].isin(status))]
+    if tamanho_texto:
+        df_filtered = df_filtered[(df_filtered['DESCRICAO'].str.len() >= tamanho_texto[0]) & ( df_filtered['DESCRICAO'].str.len() <= tamanho_texto[1] )]
     df_grouped = df_filtered.groupby(['ANO', 'MES'], as_index=False)['ID'].count()
 
     if chart_kind == 'Barra':
